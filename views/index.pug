@@ -23,7 +23,6 @@ block content
       section(class='section box' v-if="choice === 'host'")
         .field
           label(for="random-name" class='label') Ask the people who want to join to type in this name
-          button
           .control
             input(type="text", class='input' name="random-name" :value="randomName" disabled)
         .field

@@ -87,15 +87,6 @@ var app = new Vue({
         } else if (cookies.get("host") === 'join') {
             this.choice = 'join'
         }
-        if (cookies.get("roomName") && this.choice === 'host' && cookies.get("name")) {
-            this.startRoom(cookies.get("roomName"))
-            this.step = 2
-        } else if (cookies.get("roomName") && this.choice === 'join' && cookies.get("name")) {
-            this.roomName = cookies.get("roomName")
-            this.joinRoom()
-            this.step = 2
-        }
-
         socket.on('submittedBy', (user) => {
             this.fastestUser.push(user)
         })

@@ -25,48 +25,60 @@ var server = http.createServer(app);
 const io = require('socket.io')(server);
 
 rooms = []
-
-io.on('connection', socket => {
-  socket.emit('join', 'Buzz-tastic');
-  // see what room has been joined
-  socket.on("room", (roomPayload) => {
-    // join the room
-    socket.join(roomPayload.room)
-    // create a list of users
-    if (rooms.find(x => x[roomPayload.room])) {
-      rooms.find(room => {
-        room[roomPayload.room].push(roomPayload.name)
-        io.to(roomPayload.room).emit('roomUsers', room[roomPayload.room])
-      })
-    } else {
-      rooms.push({ [roomPayload.room]: [roomPayload.name]})
-    }
-    // send the room count
-    if (io.sockets.adapter.rooms[roomPayload.room]) {
-      io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
-    }
-    // wait for the message
-    socket.on("submittedBy", (payload) => {
-      // emit it to the rest of the room
-      io.to(roomPayload.room).emit('submittedBy', payload)
-    })
-    socket.on("clear", () => {
-      // emit it to the rest of the room
-      io.to(roomPayload.room).emit('clear', true)
-    })
-    socket.on("disconnect", () => {
+try {
+  io.on('connection', socket => {
+    socket.emit('join', 'Buzz-tastic');
+    // see what room has been joined
+    socket.on("room", (roomPayload) => {
+      // join the room
+      socket.join(roomPayload.room)
+      // create a list of users
+      // find a room, if it doesn't exist. Create a new one
+      try {
+        if (rooms.find(x => x[roomPayload.room])) {
+          rooms.find(room => {
+            if (room[roomPayload.room]) {
+              room[roomPayload.room].push(roomPayload.name)
+              io.to(roomPayload.room).emit('roomUsers', room[roomPayload.room])
+            }
+          })
+        } else {
+          rooms.push({ [roomPayload.room]: [roomPayload.name]})
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+     
+      // send the room count
       if (io.sockets.adapter.rooms[roomPayload.room]) {
         io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
       }
-      rooms.find(room => {
-        if (room[roomPayload.room]) {
-          room[roomPayload.room].splice(room[roomPayload.room].indexOf(roomPayload.name), 1)
-          io.to(roomPayload.room).emit('roomUsers', room[roomPayload.room])
+      // wait for the message
+      socket.on("submittedBy", (payload) => {
+        // emit it to the rest of the room
+        io.to(roomPayload.room).emit('submittedBy', payload)
+      })
+      socket.on("clear", () => {
+        // emit it to the rest of the room
+        io.to(roomPayload.room).emit('clear', true)
+      })
+      socket.on("disconnect", () => {
+        if (io.sockets.adapter.rooms[roomPayload.room]) {
+          io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
         }
+        rooms.find(room => {
+          if (room[roomPayload.room]) {
+            room[roomPayload.room].splice(room[roomPayload.room].indexOf(roomPayload.name), 1)
+            io.to(roomPayload.room).emit('roomUsers', room[roomPayload.room])
+          }
+        })
       })
     })
-  })
-});
+  });
+} catch (error) {
+  console.error(error)
+}
+
 
 /**
  * Listen on provided port, on all network interfaces.
