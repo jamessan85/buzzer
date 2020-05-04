@@ -1,0 +1,66 @@
+extends layout
+
+block content
+
+  div(id='app' class='container')
+    section(class='section box')
+      h1(class='title is-1') {{ welcome }}
+    div(v-if="step === 1")
+      section(class='section box' v-if="step === 1")
+        .field
+          label(for="name" class='label') Let's start by taking your name?
+          .control
+            input(type="text", class='input' placeholder='What is your name?' name="name" v-model="name")
+        .field
+          label(for="choice" class='label') What do you want to do?
+          .control
+              label.radio
+                input(type="radio", name="choice" v-model="choice" value="host")
+                |  Host
+              label.radio
+                input(type="radio", name="choice" v-model="choice" value="join")
+                |  Join
+      section(class='section box' v-if="choice === 'host'")
+        .field
+          label(for="random-name" class='label') Ask the people who want to join to type in this name
+          button
+          .control
+            input(type="text", class='input' name="random-name" :value="randomName" disabled)
+        .field
+            button(class="button" @click="startRoom(randomName)") Ready to go
+      section(class='section box' v-if="choice === 'join'")
+        .field
+          label(for="room-name" class='label') What room do you want to join?
+          .control
+            input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName")
+        .field
+            button(class="button" @click="joinRoom") Ready to go
+    section(v-if="step === 2" class="tile is-ancestor")
+      div(class="tile is-6 box is-vertical")
+        div
+          p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
+        div(v-if="choice !=='host'")
+          p(class="sub-title is-8") Choose a sound....
+          div.select
+            select(v-model="selectedSound")
+              option(value="null" selected disabled) -- Select a Sound --
+              option(value="none") none
+              option(v-for="i in sounds", :value='i') {{ i }}
+        div
+          div(class="big-button" @click="answer" v-if="choice !== 'host'") 
+            p Press
+          p(v-if="error") {{ error }}
+          button(v-if="choice === 'host'" class="button" @click="clear") Clear Scores
+      div(class="tile is-3 box is-vertical")
+        h1(class="title is-4") The quick list
+        div(v-for="u in fastestUser")
+          p {{ u }}
+      div(class="tile is-3 box is-vertical")
+        h1(class="title is-4") Connected users
+        div(v-for="u in userList")
+          p {{ u }}
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
+  script(src='https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js')
+  script(src="javascripts/main.js")
+    
