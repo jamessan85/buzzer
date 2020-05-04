@@ -1,4 +1,4 @@
-var socket = io('http://localhost:3005');
+var socket = io(window.location.origin);
 
 var app = new Vue({
     el: '#app',
