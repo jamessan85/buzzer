@@ -22,9 +22,9 @@ block content
                 |  Join
       section(class='section box' v-if="choice === 'host'")
         .field
-          label(for="random-name" class='label') Ask the people who want to join to type in this name
+          label(for="random-name" class='label') Send this URL to the people who want to join
           .control
-            input(type="text", class='input' name="random-name" :value="randomName" disabled)
+            input(type="text", class='input' name="random-name" :value="`${location}/?room=${randomName}`" disabled)
         .field
             button(class="button" @click="startRoom(randomName)") Ready to go
       section(class='section box' v-if="choice === 'join'")

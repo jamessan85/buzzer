@@ -59,6 +59,9 @@ var app = new Vue({
         socketID() {
             return socket.id
         },
+        location() {
+            return window.location.origin
+        },
         randomName() {            
             function getRandomInt(min, max) {
                   return Math.floor(Math.random() * (max - min)) + min;
@@ -85,6 +88,11 @@ var app = new Vue({
         if (cookies.get("host") === 'host' ) {
             this.choice = 'host'
         } else if (cookies.get("host") === 'join') {
+            this.choice = 'join'
+        }
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("room")) {
+            this.roomName = urlParams.get("room")
             this.choice = 'join'
         }
         socket.on('submittedBy', (user) => {
