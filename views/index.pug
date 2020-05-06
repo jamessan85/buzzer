@@ -3,6 +3,9 @@ extends layout
 block content
 
   div(id='app' class='container')
+    div.sticky
+      transition-group(name='fade' tag="p")
+        p(id="alert" class="has-background-primary" v-for="item in newArrival" :key="item") {{ item }} has joined the room.
     section(class='section box')
       h1(class='title is-1') {{ welcome }}
     div(v-if="step === 1")
@@ -45,10 +48,10 @@ block content
               option(value="null" selected disabled) -- Select a Sound --
               option(value="none") none
               option(v-for="i in sounds", :value='i') {{ i }}
-        div
+        div(class="flex")
           div(class="big-button" @click="answer" v-if="choice !== 'host'") 
             p Press
-          p(v-if="error") {{ error }}
+          p(v-if="error" class="error") {{ error }}
           button(v-if="choice === 'host'" class="button" @click="clear") Clear Scores
       div(class="tile is-3 box is-vertical")
         h1(class="title is-4") The quick list

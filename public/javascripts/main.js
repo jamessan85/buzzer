@@ -18,12 +18,13 @@ var app = new Vue({
       error: false,
       userList: "",
       sounds: ["cartoon", "slip"],
-      selectedSound: null
+      selectedSound: null,
+      newArrival: []
     },
     methods: {
         answer() {
             if (this.submitted === false) {
-                if (this.selectedSound !== null || this.selectedSound !== 'none' ) {
+                if (this.selectedSound !== null && this.selectedSound !== 'none' ) {
                     var sound = new Howl({
                         src: [`media/${this.selectedSound}.mp3`]
                       });
@@ -33,7 +34,7 @@ var app = new Vue({
                 socket.emit('submittedBy', this.name)
                 this.submitted = true
             } else {
-                this.error = "Already submitted you answer, please wait for the host to clear the scores"
+                this.error = "Already submitted your answer, please wait for the host to clear the scores"
             }
         },
         joinRoom() {
@@ -102,6 +103,10 @@ var app = new Vue({
             this.welcome = msg
         }),
         socket.on('roomJoin', (user) => {
+            this.newArrival.push(user)
+            setTimeout(() => {
+                this.newArrival.shift()
+            }, 3000)
             this.users.push(user)
         })
         socket.on('roomCount', (count) => {

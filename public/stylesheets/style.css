@@ -23,9 +23,9 @@ a {
 }
 
 .big-button {
-  height: 300px;
-  width: 60%;
-  margin: 20px;
+  height: 90%;
+  width: 90%;
+  margin-bottom: 20px;
   border-radius: 50%;
   background-color: #fc6865;
   border-color: none;
@@ -39,4 +39,48 @@ a {
 .big-button:active {
   box-shadow: 2px 5px #888888;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 300px;
+  margin: 20px;
+}
+
+#alert {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border-color: greenyellow;
+}
+
+.error {
+  background-color: indianred;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border-color: red;
+  color: white;
+}
+
+@media(min-width: 1216px) {
+  .flex{ height: 500px;}
+}
+
 

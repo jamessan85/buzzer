@@ -32,6 +32,8 @@ try {
     socket.on("room", (roomPayload) => {
       // join the room
       socket.join(roomPayload.room)
+
+      socket.to(roomPayload.room).emit('roomJoin', roomPayload.name)
       // create a list of users
       // find a room, if it doesn't exist. Create a new one
       try {
