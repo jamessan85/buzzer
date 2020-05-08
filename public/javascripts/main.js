@@ -19,9 +19,14 @@ var app = new Vue({
       userList: "",
       sounds: ["cartoon", "slip"],
       selectedSound: null,
-      newArrival: []
+      newArrival: [],
+      timer: {
+          message: "",
+          time: ""
+      }
     },
     methods: {
+        // press the button
         answer() {
             if (this.submitted === false) {
                 if (this.selectedSound !== null && this.selectedSound !== 'none' ) {
@@ -37,6 +42,7 @@ var app = new Vue({
                 this.error = "Already submitted your answer, please wait for the host to clear the scores"
             }
         },
+        // join a room
         joinRoom() {
             document.cookie = "name=" + this.name
             document.cookie = "host=join"
@@ -44,6 +50,7 @@ var app = new Vue({
             socket.emit('room', {room: this.roomName, name: this.name, host: false})
             this.step = 2
         },
+        // set the room up as the host
         startRoom(roomName) {
             this.roomName = roomName
             document.cookie = "name=" + this.name
@@ -52,8 +59,25 @@ var app = new Vue({
             socket.emit('room', {room: roomName, name: this.name, host: true})
             this.step = 2
         },
+        // clear the answers
         clear() {
             socket.emit('clear')
+        },
+        // show the countdown timer
+        countDown(user) {
+            let time = 5
+            this.timer.message = user + " thinks he knows the answer, the countdown is on. "
+            this.timer.time = time
+            time --
+            var x = setInterval(() => {
+                this.timer.time = time
+                time--
+                if (time < 0) {
+                    this.timer.message = 'Times up'
+                    this.timer.time = 0
+                    clearInterval(x)
+                }
+            }, 1000);
         }
     },
     computed: {
@@ -98,6 +122,9 @@ var app = new Vue({
         }
         socket.on('submittedBy', (user) => {
             this.fastestUser.push(user)
+            if (this.fastestUser.length === 1) {
+                this.countDown(this.fastestUser[0])
+            }
         })
         socket.on('join', (msg) => {
             this.welcome = msg
@@ -117,6 +144,8 @@ var app = new Vue({
                 this.fastestUser = []
                 this.submitted = false
                 this.error = false
+                this.timer = {message: "", time: ""}
+                console.log(this.timer)
             }
         }),
         socket.on('roomUsers', (userList) => {

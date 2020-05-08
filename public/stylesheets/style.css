@@ -1,6 +1,6 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Roboto", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -22,22 +22,38 @@ a {
 	border-radius: .4em;
 }
 
-.big-button {
-  height: 90%;
-  width: 90%;
-  margin-bottom: 20px;
-  border-radius: 50%;
-  background-color: #fc6865;
-  border-color: none;
-  font-size: 2rem;
-  box-shadow: 5px 10px #888888;
-  color: white;
+.flex {
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  height: 300px;
+  margin: 20px;
 }
-.big-button:active {
-  box-shadow: 2px 5px #888888;
+
+.big-button{
+  text-decoration: none;
+  background: #ff8181;
+  color: #FFF;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  vertical-align: middle;
+  overflow: hidden;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+  border-bottom: solid 3px #bd6565;
+  transition: .4s;
+}
+
+.big-button:active{
+  -ms-transform: translateY(2px);
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+  border-bottom: none;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -55,19 +71,31 @@ a {
   z-index: 999999;
 }
 
-.flex {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  height: 300px;
-  margin: 20px;
-}
+
 
 #alert {
   margin: 5px;
   padding: 5px;
   border-radius: 5px;
   border-color: greenyellow;
+}
+
+.success {
+  background-color: rgb(88, 241, 68);
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border-color: rgb(22, 248, 97);
+  color: black;
+}
+
+.info {
+  background-color: rgb(47, 67, 245);
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border-color: rgb(56, 59, 241);
+  color: white;
 }
 
 .error {
@@ -80,7 +108,12 @@ a {
 }
 
 @media(min-width: 1216px) {
-  .flex{ height: 500px;}
+  .flex{ height: 300px;}
+  .big-button {
+    height: 200px;
+    width: 200px;
+    line-height: 200px;
+  }
 }
 
 

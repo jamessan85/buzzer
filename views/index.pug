@@ -7,7 +7,7 @@ block content
       transition-group(name='fade' tag="p")
         p(id="alert" class="has-background-primary" v-for="item in newArrival" :key="item") {{ item }} has joined the room.
     section(class='section box')
-      h1(class='title is-1') {{ welcome }}
+      h1(class='title is-3') {{ welcome }}
     div(v-if="step === 1")
       section(class='section box' v-if="step === 1")
         .field
@@ -25,9 +25,9 @@ block content
                 |  Join
       section(class='section box' v-if="choice === 'host'")
         .field
-          label(for="random-name" class='label') Send this URL to the people who want to join
+          label(for="random-name" class='label') Copy this URL and send to the people who want to join the room
           .control
-            input(type="text", class='input' name="random-name" :value="`${location}/?room=${randomName}`" disabled)
+            p(id="url" ref="url" class="success") {{ `${location}/?room=${randomName}` }}
         .field
             button(class="button" @click="startRoom(randomName)") Ready to go
       section(class='section box' v-if="choice === 'join'")
@@ -51,7 +51,9 @@ block content
         div(class="flex")
           div(class="big-button" @click="answer" v-if="choice !== 'host'") 
             p Press
-          p(v-if="error" class="error") {{ error }}
+          div(v-show="timer.message && timer.message !== ''")
+            p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
+          p(v-show="error" class="error") {{ error }}
           button(v-if="choice === 'host'" class="button" @click="clear") Clear Scores
       div(class="tile is-3 box is-vertical")
         h1(class="title is-4") The quick list
