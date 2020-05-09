@@ -23,9 +23,18 @@ var app = new Vue({
       timer: {
           message: "",
           time: ""
-      }
+      },
+      formErrors: {username: ""}
     },
     methods: {
+        validate() {
+            if (this.name === "" || this.name === null || this.name.length <= 0) {
+                this.formErrors.username = "Please enter a name"
+                return false
+            }
+            this.formErrors.username = null
+            return true
+        },
         // press the button
         answer() {
             if (this.submitted === false) {
@@ -44,20 +53,25 @@ var app = new Vue({
         },
         // join a room
         joinRoom() {
-            document.cookie = "name=" + this.name
-            document.cookie = "host=join"
-            document.cookie = "roomName=" + this.roomName
-            socket.emit('room', {room: this.roomName, name: this.name, host: false})
-            this.step = 2
+            if (this.validate()) {
+                document.cookie = "name=" + this.name
+                document.cookie = "host=join"
+                document.cookie = "roomName=" + this.roomName
+                socket.emit('room', {room: this.roomName, name: this.name, host: false})
+                this.step = 2
+            }
         },
         // set the room up as the host
         startRoom(roomName) {
-            this.roomName = roomName
-            document.cookie = "name=" + this.name
-            document.cookie = "host=host"
-            document.cookie = "roomName=" + roomName
-            socket.emit('room', {room: roomName, name: this.name, host: true})
-            this.step = 2
+            if (this.validate()) {
+                this.roomName = roomName
+                document.cookie = "name=" + this.name
+                document.cookie = "host=host"
+                document.cookie = "roomName=" + roomName
+                socket.emit('room', {room: roomName, name: this.name, host: true})
+                this.step = 2
+            }
+
         },
         // clear the answers
         clear() {
@@ -66,7 +80,7 @@ var app = new Vue({
         // show the countdown timer
         countDown(user) {
             let time = 5
-            this.timer.message = user + " thinks he knows the answer, the countdown is on. "
+            this.timer.message = user + " thinks they knows the answer, the countdown is on. "
             this.timer.time = time
             time --
             var x = setInterval(() => {
