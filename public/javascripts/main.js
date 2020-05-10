@@ -24,15 +24,30 @@ var app = new Vue({
           message: "",
           time: ""
       },
-      formErrors: {username: ""}
+      formErrors: {username: "", choice: "", roomname: ""}
     },
     methods: {
         validate() {
+            let count = 0
             if (this.name === "" || this.name === null || this.name.length <= 0) {
                 this.formErrors.username = "Please enter a name"
-                return false
+                count++
             }
-            this.formErrors.username = null
+            if (this.choice === "" || this.choice === null) {
+                this.formErrors.choice = "Please select a choice"
+                count++
+            }
+            // if (this.roomName == "" || this.roomName === null || !this.roomName) {
+            //     this.formErrors.roomname = "Please type in a room name"
+            //     count++
+            // }
+            if (count > 0 ) {
+                return false
+            } else {
+                for (error in this.formErrors) {
+                    this.formErrors[error] = null
+                }
+            }
             return true
         },
         // press the button
@@ -92,6 +107,17 @@ var app = new Vue({
                     clearInterval(x)
                 }
             }, 1000);
+        },
+        activeColor(key) {
+            if (key === 0) {
+                return "gold"
+            }
+            if (key === 1) {
+                return "silver"
+            }
+            if (key === 2) {
+                return "#b08d57"
+            } 
         }
     },
     computed: {
@@ -134,11 +160,13 @@ var app = new Vue({
             this.roomName = urlParams.get("room")
             this.choice = 'join'
         }
+
+        /***** start the socket functions ******/
         socket.on('submittedBy', (user) => {
             this.fastestUser.push(user)
-            if (this.fastestUser.length === 1) {
-                this.countDown(this.fastestUser[0])
-            }
+            // if (this.fastestUser.length === 1) {
+            //     this.countDown(this.fastestUser[0])
+            // }
         })
         socket.on('join', (msg) => {
             this.welcome = msg
@@ -159,7 +187,6 @@ var app = new Vue({
                 this.submitted = false
                 this.error = false
                 this.timer = {message: "", time: ""}
-                console.log(this.timer)
             }
         }),
         socket.on('roomUsers', (userList) => {

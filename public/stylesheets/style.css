@@ -3,16 +3,8 @@ body {
   font: 14px "Roboto", Helvetica, Arial, sans-serif;
 }
 
-p {
-  padding: 5px
-}
-
 a {
   color: #00B7FF;
-}
-
-.box {
-  background-color: #c7f5ff;
 }
 
 #leftbox {

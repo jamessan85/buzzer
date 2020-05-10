@@ -28,6 +28,7 @@ block content
               label.radio
                 input(type="radio", name="choice" v-model="choice" value="join")
                 |  Join
+              p(v-if="formErrors.choice" class="error") {{ formErrors.choice }}
       section(class='section box' v-if="choice === 'host'")
         .field
           label(for="random-name" class='label') Copy this URL and send to the people who want to join the room
@@ -40,10 +41,12 @@ block content
           label(for="room-name" class='label') What room do you want to join?
           .control
             input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName")
+            p(v-if="formErrors.roomname" class="error") {{ formErrors.roomname }}
         .field
             button(class="button" @click="joinRoom(name)") Ready to go
-    section(v-if="step === 2" class="tile is-ancestor section")
-      div(class="tile is-4 box is-vertical")
+    div(v-if="step === 2" class="columns")
+      div(class="column box")
+        h1(class="title is-size-4") Buzzer
         div
           p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
         div(v-if="choice !=='host'")
@@ -60,11 +63,11 @@ block content
             p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
           p(v-show="error" class="error") {{ error }}
           button(v-if="choice === 'host'" class="button" @click="clear") Clear Scores
-      div(class="tile is-4 box is-vertical")
-        h1(class="title is-size-4") The Fastest Finger is....
-        div(v-for="u in fastestUser")
-          p {{ u }}
-      div(class="tile is-4 box is-vertical")
+      div(class="column box")
+        h1(class="title is-size-4") Fastest Finger
+        div(v-for="(u, key) in fastestUser" :key="key")
+          p <i class="fas fa-medal fa-2x" :style="{color: activeColor(key)}"></i>{{ u }}
+      div(class="column box")
         h1(class="title is-size-4") Connected Users
         div(v-for="u in userList")
           p {{ u }}
