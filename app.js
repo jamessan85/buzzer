@@ -33,15 +33,6 @@ try {
     socket.on("room", async (roomPayload) => {
       // join the room
       socket.join(roomPayload.room)
-
-      var file = await new Promise((resolve, reject) => {
-        fs.readFile("./public/images/img_lights.jpg", 'base64', (err, data) => {
-            if (err) {
-              reject(err)
-            }
-            resolve(data)
-          })
-      })
       // send the file to everyone
       socket.on("image", (payload) => {
         if (payload.data) {
