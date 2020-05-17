@@ -8,10 +8,11 @@ block content
         p(id="alert" class="has-background-primary" v-for="item in newArrival" :key="item") {{ item }} has joined the room.
     section(class='section box')
       h1(class='title is-size-3') {{ welcome }}
-      p(class="sub-title is-size-5") A Simple Online Quiz Buzzer.
-      p Select host and copy the unique url provided and send to your friends and family.
-      p Wait for them to join the room. Ask your questions and wait for them to buzz, Everyone will get see who was fastest on the buzzer.
-      p When your ready to start the next question the host and clear the quickest users and enable the buzzers again. 
+      div(v-if="step === 1")
+        p(class="sub-title is-size-5") A Simple Online Quiz Buzzer.
+        p Select host and copy the unique url provided and send to your friends and family.
+        p Wait for them to join the room. Ask your questions and wait for them to buzz, Everyone will get see who was fastest on the buzzer.
+        p When your ready to start the next question the host and clear the quickest users and enable the buzzers again. 
     div(v-if="step === 1")
       section(class='section box' v-if="step === 1")
         .field
@@ -44,33 +45,64 @@ block content
             p(v-if="formErrors.roomname" class="error") {{ formErrors.roomname }}
         .field
             button(class="button" @click="joinRoom(name)") Ready to go
-    div(v-if="step === 2" class="columns")
-      div(class="column box")
-        h1(class="title is-size-4") Buzzer
-        div
-          p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
-        div(v-if="choice !=='host'")
-          p(class="sub-title") Choose a sound....
-          div.select
-            select(v-model="selectedSound")
-              option(value="null" selected disabled) -- Select a Sound --
-              option(value="none") none
-              option(v-for="i in sounds", :value='i') {{ i }}
-        div(class="flex")
-          div(class="big-button" @click="answer" v-if="choice !== 'host'") 
-            p Press
-          div(v-show="timer.message && timer.message !== ''")
-            p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
-          p(v-show="error" class="error") {{ error }}
-          button(v-if="choice === 'host'" class="button" @click="clear") Clear Scores
-      div(class="column box")
-        h1(class="title is-size-4") Fastest Finger
-        div(v-for="(u, key) in fastestUser" :key="key")
-          p <i class="fas fa-medal fa-2x" :style="{color: activeColor(key)}"></i>{{ u }}
-      div(class="column box")
-        h1(class="title is-size-4") Connected Users
-        div(v-for="u in userList")
-          p {{ u }}
+    div(v-if="step === 2")
+      div(class="columns")
+        div(class="column" v-if="choice === 'host'")
+          div.box
+            h1(class="title is-size-4") Control Panel
+            div
+              p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
+            .file.has-name
+              label.file-label
+                input.file-input(type='file' name='resume' @change="viewFile")
+                span.file-cta
+                  span.file-icon
+                    i.fas.fa-upload
+                  span.file-label
+                    | Choose a file&mldr;
+                span.file-name
+                  | {{ file.name }}
+            button.button(type="submit" @click="sendFile") Send
+            div(class="flex")
+              div(v-show="timer.message && timer.message !== ''")
+                p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
+              p(v-show="error" class="error") {{ error }}
+              button(class="button" @click="clear") Clear Scores
+        div(class="column" v-if="choice !== 'host'")
+          div.box
+            h1(class="title is-size-4") Buzzer
+            div
+              p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
+            p(class="sub-title") Choose a sound....
+            div.select
+              select(v-model="selectedSound")
+                option(value="null" selected disabled) -- Select a Sound --
+                option(value="none") none
+                option(v-for="i in sounds", :value='i') {{ i }}
+            div(class="flex")
+              div(class="big-button" @click="answer") 
+                p Press
+              div(v-show="timer.message && timer.message !== ''")
+                p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
+              p(v-show="error" class="error") {{ error }}
+        div(class="column")
+          div.box
+            h1(class="title is-size-4") Content
+            div.view-box
+              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" autoplay)
+              img.image-transform(:src="fileSrc.data" v-show="fileSrc.mediaType === 'image'" ref="image")
+              audio(:src="fileSrc.data" v-show="fileSrc.mediaType === 'audio'" ref="audio" autoplay)
+      div(class="columns")
+        div(class="column")
+          div.box
+            h1(class="title is-size-4") Fastest Finger
+            div(v-for="(u, key) in fastestUser" :key="key")
+              p <i class="fas fa-medal fa-2x" :style="{color: activeColor(key)}"></i>{{ u }}
+        div(class="column")
+          div.box
+            h1(class="title is-size-4") Connected Users
+            div(v-for="u in userList")
+              p {{ u }}
   script(src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js")
   script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
   script(src='https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js')

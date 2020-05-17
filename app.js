@@ -5,6 +5,7 @@ var logger = require('morgan');
 var app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const fs = require("fs")
 
 
 // view engine setup
@@ -29,10 +30,27 @@ try {
   io.on('connection', socket => {
     socket.emit('join', 'Quiz Buzzer');
     // see what room has been joined
-    socket.on("room", (roomPayload) => {
+    socket.on("room", async (roomPayload) => {
       // join the room
       socket.join(roomPayload.room)
 
+      var file = await new Promise((resolve, reject) => {
+        fs.readFile("./public/images/img_lights.jpg", 'base64', (err, data) => {
+            if (err) {
+              reject(err)
+            }
+            resolve(data)
+          })
+      })
+      // send the file to everyone
+      socket.on("image", (payload) => {
+        if (payload.data) {
+          io.to(roomPayload.room).binary(true).emit('image', {
+            type: payload.type, data: payload.data.toString('base64')
+          })
+        }
+      })
+      // emit that someone has joined the room
       socket.to(roomPayload.room).emit('roomJoin', roomPayload.name)
       // create a list of users
       // find a room, if it doesn't exist. Create a new one
@@ -50,11 +68,13 @@ try {
       if (io.sockets.adapter.rooms[roomPayload.room]) {
         io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
       }
-      // wait for the message
+      // Send you result to everyone. 
       socket.on("submittedBy", (payload) => {
         // emit it to the rest of the room
         io.to(roomPayload.room).emit('submittedBy', payload)
       })
+
+      // reset the fastest user table.
       socket.on("clear", () => {
         // emit it to the rest of the room
         io.to(roomPayload.room).emit('clear', true)

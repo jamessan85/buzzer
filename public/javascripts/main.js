@@ -24,7 +24,9 @@ var app = new Vue({
           message: "",
           time: ""
       },
-      formErrors: {username: "", choice: "", roomname: ""}
+      formErrors: {username: "", choice: "", roomname: ""},
+      fileSrc: {data: "", mediaType: ""}, // file recieved from the server
+      file: {name: ""} // file to be sent to everyone
     },
     methods: {
         validate() {
@@ -57,7 +59,6 @@ var app = new Vue({
                     var sound = new Howl({
                         src: [`media/${this.selectedSound}.mp3`]
                       });
-        
                     sound.play();
                 }
                 socket.emit('submittedBy', this.name)
@@ -118,6 +119,15 @@ var app = new Vue({
             if (key === 2) {
                 return "#b08d57"
             } 
+        },
+        sendFile(e) {
+            e.preventDefault()
+            socket.emit("image", this.file)
+        },
+        viewFile(e) {
+            this.file.type = e.target.files[0].type
+            this.file.data = e.target.files[0]
+            this.file.name = e.target.files[0].name
         }
     },
     computed: {
@@ -162,15 +172,18 @@ var app = new Vue({
         }
 
         /***** start the socket functions ******/
+        // send the buzzer click to socker
         socket.on('submittedBy', (user) => {
             this.fastestUser.push(user)
             // if (this.fastestUser.length === 1) {
             //     this.countDown(this.fastestUser[0])
             // }
         })
+        // on joining the room - send the title of the webpage
         socket.on('join', (msg) => {
             this.welcome = msg
         }),
+        // on room join send push to array, clear it after 3 seconds. 
         socket.on('roomJoin', (user) => {
             this.newArrival.push(user)
             setTimeout(() => {
@@ -178,9 +191,11 @@ var app = new Vue({
             }, 3000)
             this.users.push(user)
         })
+        // how many people are in the room. 
         socket.on('roomCount', (count) => {
             this.roomCount = count
         })
+        // reset the scores and other allow the buttons to be clicked again
         socket.on('clear', (clear) => {
             if (clear === true) {
                 this.fastestUser = []
@@ -189,8 +204,23 @@ var app = new Vue({
                 this.timer = {message: "", time: ""}
             }
         }),
+        // list of the users in the room
         socket.on('roomUsers', (userList) => {
             this.userList = userList
+        })
+
+        socket.on('image', (payload) => {
+            const element = this.$refs
+            if (payload.type.search(/video/i) >= 0) {
+                this.fileSrc.mediaType = 'video'
+            }
+            if (payload.type.search(/audio/i) >= 0) {
+                this.fileSrc.mediaType = 'audio'
+            }
+            if (payload.type.search(/image/i) >= 0) {
+                this.fileSrc.mediaType = 'image'
+            }
+            this.fileSrc.data = "data:" + payload.type + ";base64," + payload.data
         })
     }
   })
