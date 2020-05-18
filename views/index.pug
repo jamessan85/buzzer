@@ -69,8 +69,8 @@ block content
               p(v-show="error" class="error") {{ error }}
               button(class="button" @click="clear") Clear Scores
             div(class="flex")
-              button(class="button" @click="playPause('pause')") Pause Animation
-              button(class="button" @click="playPause('play')") Play Animation
+              button(class="button" @click="playPause('pause')") Pause
+              button(class="button" @click="playPause('play')") Play
         div(class="column" v-if="choice !== 'host'")
           div.box
             h1(class="title is-size-4") Buzzer
