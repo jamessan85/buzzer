@@ -73,8 +73,8 @@ a {
   z-index: 999999;
 }
 
-.box {
-  position: relative;
+.button {
+  margin: 0px 10px;
 }
 
 #alert {
@@ -115,6 +115,8 @@ a {
   width: 100%;
   height: 75%;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .image-transform {

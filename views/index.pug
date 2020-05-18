@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-  div(id='app' class='container')
+  div(id='app' class='container' v-cloak)
     div.sticky
       transition-group(name='fade' tag="p")
         p(id="alert" class="has-background-primary" v-for="item in newArrival" :key="item") {{ item }} has joined the room.
@@ -41,7 +41,7 @@ block content
         .field
           label(for="room-name" class='label') What room do you want to join?
           .control
-            input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName")
+            input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName" :disabled="roomName != ''")
             p(v-if="formErrors.roomname" class="error") {{ formErrors.roomname }}
         .field
             button(class="button" @click="joinRoom(name)") Ready to go
@@ -62,22 +62,20 @@ block content
                     | Choose a file&mldr;
                 span.file-name
                   | {{ file.name }}
-            button.button(type="submit" @click="sendFile") Send
-            div(class="flex")
-              div(v-show="timer.message && timer.message !== ''")
-                p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
-              p(v-show="error" class="error") {{ error }}
-              button(class="button" @click="clear") Clear Scores
-            div(class="flex")
-              button(class="button" @click="playPause('pause')") Pause
-              button(class="button" @click="playPause('play')") Play
+                button.button(type="submit" @click="sendFile") Send
+            div(v-show="timer.message && timer.message !== ''")
+              p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
+            p(v-show="error" class="error") {{ error }}
+            button(class="button" @click="clear") Clear Scores
+            button(class="button" @click="playPause('pause')") Pause
+            button(class="button" @click="playPause('play')") Play
         div(class="column" v-if="choice !== 'host'")
           div.box
             h1(class="title is-size-4") Buzzer
             div
               p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
             p(class="sub-title") Choose a sound....
-            div.select
+            div.select.is-small
               select(v-model="selectedSound")
                 option(value="null" selected disabled) -- Select a Sound --
                 option(value="none") none

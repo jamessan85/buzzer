@@ -16,15 +16,15 @@ var app = new Vue({
       fastestUser: [],
       submitted: false,
       error: false,
-      userList: "",
-      sounds: ["cartoon", "slip"],
-      selectedSound: null,
-      newArrival: [],
-      timer: {
+      userList: "", // the userlist
+      sounds: ["cartoon", "slip"], // sounds
+      selectedSound: null, // choose a sound
+      newArrival: [], // new arrivals get put in here, then cleared down
+      timer: { // the time, currenlty optional
           message: "",
           time: ""
       },
-      formErrors: {username: "", choice: "", roomname: ""},
+      formErrors: {username: "", choice: "", roomname: ""}, // form Errors
       fileSrc: {data: "", mediaType: ""}, // file recieved from the server
       file: {name: ""} // file to be sent to everyone
     },
