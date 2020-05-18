@@ -73,7 +73,9 @@ a {
   z-index: 999999;
 }
 
-
+.box {
+  position: relative;
+}
 
 #alert {
   margin: 5px;
@@ -117,7 +119,8 @@ a {
 
 .image-transform {
   animation: rotate 30s 1;
-  transform: scale(5,5);
+  -webkit-transform: scale(5,5) rotate(0deg);
+  transform: scale(5,5) rotate(0deg);
 }
 
 .image-transform--pause {
@@ -130,20 +133,14 @@ a {
 
 @keyframes rotate {
   0% {
-    transform: scale(5,5) rotate(none)
+    -webkit-transform: rotate(none) scale(5,5);
+    transform: rotate(0deg) scale(5,5);
   }
   100% {
-    transform: scale(1,1) rotate(1turn)
+    -webkit-transform: rotate(1turn) scale(1,1);
+    transform: rotate(1turn) scale(1,1);
   }
 }
 
-@media(min-width: 1216px) {
-  /* .flex{ height: 300px;} */
-  /* .big-button {
-    height: 200px;
-    width: 200px;
-    line-height: 200px;
-  } */
-}
 
 

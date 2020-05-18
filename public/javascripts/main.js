@@ -132,7 +132,6 @@ var app = new Vue({
             socket.emit('imageControl', value)
         },
         pauseImg(elm, mediaType) {
-            console.log({elm, mediaType})
             if (mediaType === 'image') {
                 elm.classList.remove('image-transform--play')
                 elm.classList.add('image-transform--pause')
@@ -142,7 +141,6 @@ var app = new Vue({
             }
         },
         resumeImg(elm, mediaType) {
-            console.log({elm, mediaType})
             if (mediaType === 'image') {
                 elm.classList.remove('image-transform--pause')
                 elm.classList.add('image-transform--play')
