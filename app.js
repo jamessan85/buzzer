@@ -33,14 +33,7 @@ try {
     socket.on("room", async (roomPayload) => {
       // join the room
       socket.join(roomPayload.room)
-      // send the file to everyone
-      socket.on("image", (payload) => {
-        if (payload.data) {
-          io.to(roomPayload.room).binary(true).emit('image', {
-            type: payload.type, data: payload.data.toString('base64')
-          })
-        }
-      })
+
       // emit that someone has joined the room
       socket.to(roomPayload.room).emit('roomJoin', roomPayload.name)
 
@@ -61,6 +54,19 @@ try {
       if (io.sockets.adapter.rooms[roomPayload.room]) {
         io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
       }
+
+      // send the file to everyone
+      socket.on("image", (payload) => {
+        if (payload.data) {
+          io.to(roomPayload.room).binary(true).emit('image', {
+            type: payload.type, data: payload.data.toString('base64')
+          })
+        }
+      })
+
+      socket.on("clearFileSrc", () => {
+        io.to(roomPayload.room).emit("clearFileSrc")
+      })
 
       // Send you result to everyone. 
       socket.on("submittedBy", (payload) => {

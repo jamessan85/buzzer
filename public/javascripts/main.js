@@ -16,15 +16,15 @@ var app = new Vue({
       fastestUser: [],
       submitted: false,
       error: false,
-      userList: "", // the userlist
-      sounds: ["cartoon", "slip"], // sounds
-      selectedSound: null, // choose a sound
-      newArrival: [], // new arrivals get put in here, then cleared down
-      timer: { // the time, currenlty optional
+      userList: "",
+      sounds: ["cartoon", "slip"],
+      selectedSound: null,
+      newArrival: [],
+      timer: {
           message: "",
           time: ""
       },
-      formErrors: {username: "", choice: "", roomname: ""}, // form Errors
+      formErrors: {username: "", choice: "", roomname: ""},
       fileSrc: {data: "", mediaType: ""}, // file recieved from the server
       file: {name: ""} // file to be sent to everyone
     },
@@ -124,6 +124,7 @@ var app = new Vue({
             socket.emit("image", this.file)
         },
         viewFile(e) {
+            socket.emit("clearFileSrc")
             this.file.type = e.target.files[0].type
             this.file.data = e.target.files[0]
             this.file.name = e.target.files[0].name
@@ -137,7 +138,15 @@ var app = new Vue({
                 elm.classList.add('image-transform--pause')
             }
             if (mediaType === 'video' || mediaType === 'audio') {
-                elm.pause()
+                const play = elm.play()
+                if (play !== undefined) {
+                    play.then(_ => {
+                      elm.pause();
+                    })
+                    .catch(error => {
+                      console.log(error)
+                    });
+                  }
             }
         },
         resumeImg(elm, mediaType) {
@@ -257,6 +266,11 @@ var app = new Vue({
             if (payload === 'pause') {
                 this.pauseImg(imgElm, this.fileSrc.mediaType)
             }
+        })
+
+        socket.on('clearFileSrc', () => {
+            this.fileSrc.mediaType = ""
+            this.fileSrc.data = ""
         })
     }
   })
