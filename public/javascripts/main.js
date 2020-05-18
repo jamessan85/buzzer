@@ -87,7 +87,6 @@ var app = new Vue({
                 socket.emit('room', {room: roomName, name: this.name, host: true})
                 this.step = 2
             }
-
         },
         // clear the answers
         clear() {
@@ -128,6 +127,29 @@ var app = new Vue({
             this.file.type = e.target.files[0].type
             this.file.data = e.target.files[0]
             this.file.name = e.target.files[0].name
+        },
+        playPause(value) {
+            socket.emit('imageControl', value)
+        },
+        pauseImg(elm, mediaType) {
+            console.log({elm, mediaType})
+            if (mediaType === 'image') {
+                elm.classList.remove('image-transform--play')
+                elm.classList.add('image-transform--pause')
+            }
+            if (mediaType === 'video' || mediaType === 'audio') {
+                elm.pause()
+            }
+        },
+        resumeImg(elm, mediaType) {
+            console.log({elm, mediaType})
+            if (mediaType === 'image') {
+                elm.classList.remove('image-transform--pause')
+                elm.classList.add('image-transform--play')
+            }
+            if (mediaType === 'video' || mediaType === 'audio') {
+                elm.play()
+            }
         }
     },
     computed: {
@@ -175,6 +197,8 @@ var app = new Vue({
         // send the buzzer click to socker
         socket.on('submittedBy', (user) => {
             this.fastestUser.push(user)
+            const imgElm = this.$refs[this.fileSrc.mediaType]
+            this.pauseImg(imgElm, this.fileSrc.mediaType)
             // if (this.fastestUser.length === 1) {
             //     this.countDown(this.fastestUser[0])
             // }
@@ -210,7 +234,7 @@ var app = new Vue({
         })
 
         socket.on('image', (payload) => {
-            const element = this.$refs
+            const el = this.$refs
             if (payload.type.search(/video/i) >= 0) {
                 this.fileSrc.mediaType = 'video'
             }
@@ -220,7 +244,21 @@ var app = new Vue({
             if (payload.type.search(/image/i) >= 0) {
                 this.fileSrc.mediaType = 'image'
             }
+            // reset the image if it exists
+            el.image.style.animation = 'none';
+            el.image.offsetHeight; /* trigger reflow */
+            el.image.style.animation = null;
             this.fileSrc.data = "data:" + payload.type + ";base64," + payload.data
+        })
+
+        socket.on('imageControl', (payload) => {
+            const imgElm = this.$refs[this.fileSrc.mediaType]
+            if (payload === 'play') {
+                this.resumeImg(imgElm, this.fileSrc.mediaType)
+            }
+            if (payload === 'pause') {
+                this.pauseImg(imgElm, this.fileSrc.mediaType)
+            }
         })
     }
   })

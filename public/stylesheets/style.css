@@ -114,17 +114,24 @@ a {
 }
 
 .image-transform {
-  animation: rotate 30s infinite;
+  animation: rotate 30s 1;
   transform: scale(5,5);
-  
+}
+
+.image-transform--pause {
+  animation-play-state: paused;
+}
+
+.image-transform--resume {
+  animation-play-state: running;
 }
 
 @keyframes rotate {
   0% {
-    transform: scale(5,5)
+    transform: scale(5,5) rotate(none)
   }
   100% {
-    transform: scale(1,1)
+    transform: scale(1,1) rotate(1turn)
   }
 }
 

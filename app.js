@@ -43,6 +43,7 @@ try {
       })
       // emit that someone has joined the room
       socket.to(roomPayload.room).emit('roomJoin', roomPayload.name)
+
       // create a list of users
       // find a room, if it doesn't exist. Create a new one
       try {
@@ -55,14 +56,20 @@ try {
       } catch (error) {
         throw new Error(error)
       }
+
       // send the room count
       if (io.sockets.adapter.rooms[roomPayload.room]) {
         io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
       }
+
       // Send you result to everyone. 
       socket.on("submittedBy", (payload) => {
         // emit it to the rest of the room
         io.to(roomPayload.room).emit('submittedBy', payload)
+      })
+
+      socket.on("imageControl", (payload) => {
+        io.to(roomPayload.room).emit('imageControl', payload)
       })
 
       // reset the fastest user table.
@@ -70,6 +77,8 @@ try {
         // emit it to the rest of the room
         io.to(roomPayload.room).emit('clear', true)
       })
+
+      // on disconent, remove users and updated room count
       socket.on("disconnect", () => {
         if (io.sockets.adapter.rooms[roomPayload.room]) {
           io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
