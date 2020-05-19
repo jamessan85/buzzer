@@ -61,7 +61,6 @@ var app = new Vue({
                       });
                     sound.play();
                 }
-                window.navigator.vibrate(200)
                 socket.emit('submittedBy', this.name)
                 this.submitted = true
             } else {
