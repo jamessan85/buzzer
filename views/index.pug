@@ -63,6 +63,7 @@ block content
                 span.file-name
                   | {{ file.name }}
                 button.button(type="submit" @click="sendFile") Send
+                button.button(type="submit" @click="getFile") Get
             div(v-show="timer.message && timer.message !== ''")
               p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
             p(v-show="error" class="error") {{ error }}
@@ -107,5 +108,6 @@ block content
   script(src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js")
   script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
   script(src='https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js')
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js")
   script(src="javascripts/main.js")
     

@@ -121,7 +121,17 @@ var app = new Vue({
         },
         sendFile(e) {
             e.preventDefault()
-            socket.emit("image", this.file)
+            var form = new FormData()
+            for (data in this.file) {
+                form.append(data, this.file[data])
+            }
+            axios.post("/stream", form)
+            // socket.emit("image", this.file)
+        },
+        async getFile(e) {
+            e.preventDefault()
+            let result = await axios.get("/file")
+            console.log(result.data)
         },
         viewFile(e) {
             socket.emit("clearFileSrc")

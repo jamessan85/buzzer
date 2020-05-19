@@ -1,6 +1,13 @@
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+const multer = require("multer");
+const storage = multer.memoryStorage();
+
+// set up multer, only accept PDF, store in memory
+const upload = multer({
+  dest: "./temp/"
+});
 
 var app = express();
 const server = require('http').Server(app);
@@ -13,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.json());
+// app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -102,6 +109,16 @@ try {
 } catch (error) {
   console.error(error)
 }
+
+app.post("/stream", upload.single('data'), (req, res, next) => {
+  const file = req.file
+  res.send("OK")
+})
+
+app.get("/file", (req, res, next) => {
+  const src = fs.createReadStream('./temp/VID_20200322_123309.mp4');
+  src.pipe(res);
+})
 
 server.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 
