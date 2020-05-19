@@ -55,12 +55,13 @@ var app = new Vue({
         // press the button
         answer() {
             if (this.submitted === false) {
-                if (this.selectedSound !== null && this.selectedSound !== 'none' ) {
+                if (this.selectedSound && typeof this.selectedSound === "string") {
                     var sound = new Howl({
                         src: [`media/${this.selectedSound}.mp3`]
                       });
                     sound.play();
                 }
+                window.navigator.vibrate(200)
                 socket.emit('submittedBy', this.name)
                 this.submitted = true
             } else {

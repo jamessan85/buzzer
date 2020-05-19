@@ -1,7 +1,7 @@
 [v-cloak] {display: none}
 
 body {
-  padding: 50px;
+  padding: 10px;
   font: 14px "Roboto", Helvetica, Arial, sans-serif;
 }
 
@@ -24,12 +24,18 @@ a {
 	border-radius: .4em;
 }
 
-.flex {
+.flex-center {
   display: flex;
   align-items: center;
   flex-direction: column;
   /* height: 300px; */
   margin: 20px;
+}
+
+.flex-column {
+  display: flex;
+  align-content: space-between;
+  flex-direction: column;
 }
 
 .big-button{
@@ -74,7 +80,7 @@ a {
 }
 
 .button {
-  margin: 0px 10px;
+  margin: 10px 10px;
 }
 
 #alert {
