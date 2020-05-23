@@ -32,7 +32,7 @@ block content
               p(v-if="formErrors.choice" class="error") {{ formErrors.choice }}
       section(class='section box' v-if="choice === 'host'")
         .field
-          label(for="random-name" class='label') Copy this URL and send to the people who want to join the room
+          label(for="random-name" class='label') Copy this URL and send to the people who want to join the room or ask them to join the room with this code {{ randomName }}
           .control
             p(id="url" ref="url" class="success") {{ `${location}/?room=${randomName}` }}
         .field
@@ -41,7 +41,7 @@ block content
         .field
           label(for="room-name" class='label') What room do you want to join?
           .control
-            input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName" :disabled="roomName != ''")
+            input(type="text", class='input' placeholder='enter pin host sent to you, e.g. 2323' name="room-name" v-model="roomName")
             p(v-if="formErrors.roomname" class="error") {{ formErrors.roomname }}
         .field
             button(class="button" @click="joinRoom(name)") Ready to go
@@ -90,7 +90,7 @@ block content
           div.box
             h1(class="title is-size-4") Content
             div.view-box
-              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" autoplay)
+              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" autoplay playsinline)
               img.image-transform(:src="fileSrc.data" v-show="fileSrc.mediaType === 'image'" ref="image")
               audio(:src="fileSrc.data" v-show="fileSrc.mediaType === 'audio'" ref="audio" autoplay)
       div(class="columns")

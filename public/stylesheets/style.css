@@ -119,7 +119,7 @@ a {
 
 .view-box {
   width: 100%;
-  height: 75%;
+  max-height: 400px;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -127,26 +127,29 @@ a {
 
 .image-transform {
   animation: rotate 30s 1;
-  -webkit-transform: scale(5,5) rotate(0deg);
-  transform: scale(5,5) rotate(0deg);
+  -webkit-animation: rotate 30s 1;
+  transform: scale(5,5); 
+  -webkit-transform: scale(5,5);
 }
 
 .image-transform--pause {
+  -webkit-animation-play-state: paused;
   animation-play-state: paused;
 }
 
 .image-transform--resume {
+  -webkit-animation-play-state: running;
   animation-play-state: running;
 }
 
 @keyframes rotate {
   0% {
-    -webkit-transform: rotate(none) scale(5,5);
-    transform: rotate(0deg) scale(5,5);
+    transform: scale(5,5);
+    -webkit-transform: scale(5,5);
   }
   100% {
-    -webkit-transform: rotate(1turn) scale(1,1);
-    transform: rotate(1turn) scale(1,1);
+    transform: scale(1,1);
+    -webkit-transform: scale(1,1);
   }
 }
 
