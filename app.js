@@ -87,8 +87,8 @@ try {
 
       // on disconent, remove users and updated room count
       socket.on("disconnect", () => {
-        io.to(socketID).emit("disconnected");
-        
+        io.to(socketID).emit('disconnet', "You have been disconnected");
+
         if (io.sockets.adapter.rooms[roomPayload.room]) {
           io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
         }

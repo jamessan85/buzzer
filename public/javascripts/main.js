@@ -178,7 +178,6 @@ var app = new Vue({
         }
     },
     created() {
-        console.log(socket)
         const cookies = new Map(document.cookie.split(";").map(c => {
             c = c.trim()
             return c.split("=")
@@ -271,7 +270,6 @@ var app = new Vue({
         })
 
         socket.on('disconnect', (payload) => {
-            console.log(payload)
             this.step = 3
         })
     }
