@@ -28,6 +28,7 @@ var rooms = new Map()
 
 try {
   io.on('connection', socket => {
+    const socketID = socket.id
     socket.emit('join', 'Quiz Buzzer');
     // see what room has been joined
     socket.on("room", async (roomPayload) => {
@@ -86,6 +87,8 @@ try {
 
       // on disconent, remove users and updated room count
       socket.on("disconnect", () => {
+        io.to(socketID).emit("disconnected");
+        
         if (io.sockets.adapter.rooms[roomPayload.room]) {
           io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
         }
