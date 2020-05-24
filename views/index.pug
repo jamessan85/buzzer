@@ -32,7 +32,7 @@ block content
               p(v-if="formErrors.choice" class="error") {{ formErrors.choice }}
       section(class='section box' v-if="choice === 'host'")
         .field
-          label(for="random-name" class='label') Copy this URL and send to the people who want to join the room
+          label(for="random-name" class='label') Copy this URL and send to the people who want to join the room or ask them to join the room with this code {{ randomName }}
           .control
             p(id="url" ref="url" class="success") {{ `${location}/?room=${randomName}` }}
         .field
@@ -41,14 +41,14 @@ block content
         .field
           label(for="room-name" class='label') What room do you want to join?
           .control
-            input(type="text", class='input' placeholder='e.g robbies-rocket' name="room-name" v-model="roomName" :disabled="roomName != ''")
+            input(type="text", class='input' placeholder='enter pin host sent to you, e.g. 2323' name="room-name" v-model="roomName")
             p(v-if="formErrors.roomname" class="error") {{ formErrors.roomname }}
         .field
             button(class="button" @click="joinRoom(name)") Ready to go
     div(v-if="step === 2")
       div(class="columns")
         div(class="column" v-if="choice === 'host'")
-          div.box
+          div.box.flex-column
             h1(class="title is-size-4") Control Panel
             div
               p Welcome {{ name }}, currently {{ roomCount === 1 ? roomCount + ' person' : roomCount + ' people' }} in the room #[strong {{ this.roomName }}].
@@ -61,15 +61,14 @@ block content
                   span.file-label
                     | Choose a file&mldr;
                 span.file-name
-                  | {{ file.name }}
-                button.button(type="submit" @click="sendFile") Send
-                button.button(type="submit" @click="getFile") Get
+                  | {{ file.name }}  
+            button.button(type="submit" @click="sendFile") Send
             div(v-show="timer.message && timer.message !== ''")
               p(class="info") {{ timer.message }} <span v-if="timer.time > 0" class="is-size-4"> {{ timer.time}} </span>
             p(v-show="error" class="error") {{ error }}
             button(class="button" @click="clear") Clear Scores
             button(class="button" @click="playPause('pause')") Pause
-            button(class="button" @click="playPause('play')") Play
+            button(class="button" @click="playPause('play')" :disabled="roomCount !== recieved") Play
         div(class="column" v-if="choice !== 'host'")
           div.box
             h1(class="title is-size-4") Buzzer
@@ -79,9 +78,9 @@ block content
             div.select.is-small
               select(v-model="selectedSound")
                 option(value="null" selected disabled) -- Select a Sound --
-                option(value="none") none
+                option(value="null") none
                 option(v-for="i in sounds", :value='i') {{ i }}
-            div(class="flex")
+            div(class="flex-center")
               div(class="big-button" @click="answer") 
                 p Press
               div(v-show="timer.message && timer.message !== ''")
@@ -91,8 +90,8 @@ block content
           div.box
             h1(class="title is-size-4") Content
             div.view-box
-              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" autoplay)
-              img.image-transform(:src="fileSrc.data" v-show="fileSrc.mediaType === 'image'" ref="image")
+              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" poster="images/GET-READY.png" playsinline)
+              img.image-transform.image-transform--pause(:src="fileSrc.data" v-show="fileSrc.mediaType === 'image'" ref="image")
               audio(:src="fileSrc.data" v-show="fileSrc.mediaType === 'audio'" ref="audio" autoplay)
       div(class="columns")
         div(class="column")
@@ -105,6 +104,11 @@ block content
             h1(class="title is-size-4") Connected Users
             div(v-for="u in userList")
               p {{ u }}
+    div(v-if="step === 3")
+      div(class="columns")
+        div(class="column")
+          div.box
+           p You have been disconnect - please refresh the page
   script(src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js")
   script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
   script(src='https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js')

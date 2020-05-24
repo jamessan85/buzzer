@@ -33,8 +33,20 @@ app.get('/', function(req, res, next) {
 
 var rooms = new Map()
 
+function getFile(filename) {
+  return new Promise((resolve, reject) =>  {
+    fs.readFile("./temp/" + filename, 'base64', (err, data) => {
+      if (err) {
+         reject(err)
+      }
+      resolve(data)
+    })
+  })
+}
+
 try {
   io.on('connection', socket => {
+    const socketID = socket.id
     socket.emit('join', 'Quiz Buzzer');
     // see what room has been joined
     socket.on("room", async (roomPayload) => {
@@ -63,12 +75,15 @@ try {
       }
 
       // send the file to everyone
-      socket.on("image", (payload) => {
-        if (payload.data) {
-          io.to(roomPayload.room).binary(true).emit('image', {
-            type: payload.type, data: payload.data.toString('base64')
-          })
-        }
+      socket.on("image", async (payload) => {
+          const file = await getFile(payload.filename)
+          io.to(roomPayload.room).binary(true).compress(true).emit('image', {
+            type: payload.type, data: file}
+          )
+      })
+
+      socket.on("fileRecieved", () => {
+        io.to(roomPayload.room).emit("fileRecieved")
       })
 
       socket.on("clearFileSrc", () => {
@@ -93,6 +108,8 @@ try {
 
       // on disconent, remove users and updated room count
       socket.on("disconnect", () => {
+        io.to(socketID).emit('disconnet', "You have been disconnected");
+
         if (io.sockets.adapter.rooms[roomPayload.room]) {
           io.to(roomPayload.room).emit('roomCount', io.sockets.adapter.rooms[roomPayload.room].length)
         }
@@ -112,7 +129,7 @@ try {
 
 app.post("/stream", upload.single('data'), (req, res, next) => {
   const file = req.file
-  res.send("OK")
+  res.send(file.filename)
 })
 
 app.get("/file", (req, res, next) => {
