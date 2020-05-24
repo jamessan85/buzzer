@@ -44,6 +44,15 @@ function getFile(filename) {
   })
 }
 
+function deleteFile(filename) {
+  fs.unlink("./temp/" + filename, (err) => {
+    if (err) {
+      throw err
+    }
+    console.log("file was deleted")
+  })
+}
+
 try {
   io.on('connection', socket => {
     const socketID = socket.id
@@ -76,10 +85,12 @@ try {
 
       // send the file to everyone
       socket.on("image", async (payload) => {
-          const file = await getFile(payload.filename)
+        const filename = payload.filename
+          const file = await getFile(filename)
           io.to(roomPayload.room).binary(true).compress(true).emit('image', {
             type: payload.type, data: file}
           )
+          deleteFile(filename)
       })
 
       socket.on("fileRecieved", () => {
@@ -130,11 +141,6 @@ try {
 app.post("/stream", upload.single('data'), (req, res, next) => {
   const file = req.file
   res.send(file.filename)
-})
-
-app.get("/file", (req, res, next) => {
-  const src = fs.createReadStream('./temp/VID_20200322_123309.mp4');
-  src.pipe(res);
 })
 
 server.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
