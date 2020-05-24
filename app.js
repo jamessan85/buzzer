@@ -59,7 +59,7 @@ try {
       // send the file to everyone
       socket.on("image", (payload) => {
         if (payload.data) {
-          io.to(roomPayload.room).binary(true).emit('image', {
+          io.to(roomPayload.room).binary(true).comparess(true).emit('image', {
             type: payload.type, data: payload.data.toString('base64')
           })
         }
