@@ -90,7 +90,7 @@ block content
           div.box
             h1(class="title is-size-4") Content
             div.view-box
-              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" poster="images/GET-READY.png" playsinline)
+              video(:src="fileSrc.data" v-show="fileSrc.mediaType === 'video'" ref="video" poster="images/Ring-Preloader.gif" playsinline)
               img.image-transform.image-transform--pause(:src="fileSrc.data" v-show="fileSrc.mediaType === 'image'" ref="image")
               audio(:src="fileSrc.data" v-show="fileSrc.mediaType === 'audio'" ref="audio" autoplay)
       div(class="columns")

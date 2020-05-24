@@ -294,7 +294,6 @@ var app = new Vue({
 
         socket.on('fileRecieved', () => {
             this.recieved++
-            console.log(this.recieved)
         })
 
         socket.on('disconnect', (payload) => {
