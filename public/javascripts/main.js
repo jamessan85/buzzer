@@ -171,6 +171,13 @@ var app = new Vue({
             if (mediaType === 'video' || mediaType === 'audio') {
                 elm.play()
             }
+        },
+        rejoin() {
+            if (this.choice === 'host') {
+                this.startRoom(this.roomName)
+            } else {
+                this.joinRoom()
+            }
         }
     },
     computed: {
